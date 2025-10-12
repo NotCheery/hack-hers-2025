@@ -1,3 +1,14 @@
+### Actions before hackathon
+- Create branches for each person/feature, then merge to main once completed and tested.
+- Boilerplate code - (Frontend - React+Vite setup, backend - server folder returns hello world)
+- Commit to MVP 
+
+Commit to the "MVP" (Minimum Viable Product):
+- With only 3-5 hours, your goal is to build one core feature perfectly, not five features that are all broken.
+- Once you have an idea, agree as a team: "What is the absolute minimum we need to build for this to work?"
+- Everything else is a "stretch goal." The PM's job is to be ruthless and say "No, that's a stretch goal, let's focus on the MVP."
+
+# Use Template below, delete above
 # hack-hers-2025 - (replace with project name)
 
 > ## [Brief, Catchy Tagline for Your Project]
