@@ -1,7 +1,11 @@
-### Actions before hackathon
-- Create branches for each person/feature, then merge to main once completed and tested.
-- Boilerplate code - (Frontend - React+Vite setup, backend - server folder returns hello world)
-- Commit to MVP 
+For team!
+Open vscode and terminal
+1. Clone the repository: git clone <your-github-repository-url>
+2. cd hack-hers-2025
+3. npm install
+4. npm run dev
+
+
 
 Commit to the "MVP" (Minimum Viable Product):
 - With only 3-5 hours, your goal is to build one core feature perfectly, not five features that are all broken.
@@ -33,7 +37,7 @@ Briefly describe your development process. What technologies did you use?
 
 ## ⚙️ How to Run It Locally
 
-Provide clear, step-by-step instructions so a judge can get your project running.
+Hey team! To get the project running on your computer, follow these steps:
 
 **Prerequisites:**
 -   [e.g., Node.js v18.x or later]
@@ -41,7 +45,10 @@ Provide clear, step-by-step instructions so a judge can get your project running
 -   [e.g., A `.env` file with API keys]
 
 **Installation & Startup:**
-1.  Clone the repository:
+1. Clone the repository: git clone <your-github-repository-url>
+2. cd hack-hers-2025
+3. npm install
+4. npm run dev
 
 ## 👥 Our Team
 
