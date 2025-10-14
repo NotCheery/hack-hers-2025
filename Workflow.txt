@@ -1,0 +1,45 @@
+## The Correct, Full Workflow (The "Rinse and Repeat" Cycle)
+Here is the complete cycle you and your teammates will follow for every new feature.
+
+### Step 1: Get the Latest Code 🔄
+Before you write a single line of new code, make sure you have the most recent version of the project.
+
+# 1. Go to your main branch
+    git checkout main
+
+# 2. Pull all the latest changes from GitHub
+    git pull origin main
+### Step 2: Create a NEW Branch for Your NEW Task ✅
+Now that main is up-to-date, create a fresh branch from it. Give it a descriptive name for the task you're about to do.
+
+
+# Create and switch to a new branch in one command
+    git checkout -b tahia-add-user-auth
+(Good names: tahia-add-user-auth, frontend-fix-login-button, etc.)
+
+### Step 3: Do Your Work
+Now you're on your new, clean branch. Write your code, then add and commit your changes.
+    git add .
+    git commit -m "feat: implement user registration endpoint"
+
+### Step 4: Push Your NEW Branch and Make a Pull Request 🚀
+Push your new branch to GitHub and merge it using a Pull Request, just like you did before.
+
+    git push origin tahia-add-user-auth
+
+Then go to GitHub, create the PR, and merge it into main.
+
+You have now completed one full cycle. When you're ready to start the next feature, you go back to Step 1.
+
+## What About the Old Branch? (Housekeeping 🧹)
+After your pull request is merged, your old branch (backend_tahia or tahia-add-user-auth) has served its purpose. It's good practice to delete it to keep your repository clean.
+
+GitHub usually shows a "Delete branch" button right after you merge a PR, which is the easiest way to do it.
+
+You can also delete it from your local machine:
+
+# Switch back to main first
+    git checkout main
+
+# Delete the old local branch
+    git branch -d name-of-old-branch
