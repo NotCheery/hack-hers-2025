@@ -64,10 +64,10 @@ export default function SignUpPage() {
       
       setSuccess('Account created successfully! Please check your email for verification.');
       
-      // Redirect to login page after 3 seconds
+      // Redirect to main app dashboard after 2 seconds
       setTimeout(() => {
-        router.push('/login');
-      }, 3000);
+        router.push('/');
+      }, 2000);
       
     } catch (error) {
       console.error('Sign up error:', error);
@@ -84,25 +84,18 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-pink-50/50 p-4">
-      <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-2xl shadow-xl transition-all duration-300">
-        
+    <div className="min-h-screen bg-gradient-to-br from-black to-pink-900 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-gray-800 rounded-2xl shadow-xl p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3">
-            <img src="/ClutchIcons/star.ico" className="h-32 w-32" />
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-1 leading-tight">
-            Join Clutch
-          </h1>
-          <p className="text-gray-600 text-base font-normal tracking-wide">
-            Create your account with your university email
-          </p>
+          <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">C</div>
+          <h1 className="text-3xl font-bold text-white mb-2">Join Clutch</h1>
+          <p className="text-pink-200">Create your account to get started</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
               University Email
             </label>
             <div className="relative">
@@ -115,7 +108,7 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-gray-900"
+                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
                 placeholder="you@university.edu"
               />
             </div>
@@ -123,7 +116,7 @@ export default function SignUpPage() {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
               Password
             </label>
             <div className="relative">
@@ -136,7 +129,7 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-gray-900"
+                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
                 placeholder="••••••••"
               />
             </div>
@@ -144,7 +137,7 @@ export default function SignUpPage() {
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
               Confirm Password
             </label>
             <div className="relative">
@@ -157,7 +150,7 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-gray-900"
+                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
                 placeholder="••••••••"
               />
             </div>
@@ -165,14 +158,14 @@ export default function SignUpPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+            <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-md text-sm">
               {error}
             </div>
           )}
 
           {/* Success Message */}
           {success && (
-            <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md text-sm">
+            <div className="bg-green-900/50 border border-green-500 text-green-300 px-4 py-3 rounded-md text-sm">
               {success}
             </div>
           )}
@@ -188,12 +181,12 @@ export default function SignUpPage() {
 
           {/* Sign In Link */}
           <div className="text-center">
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-300 text-sm">
               Already have an account?{' '}
               <button
                 type="button"
                 onClick={() => router.push('/login')}
-                className="text-pink-600 hover:text-pink-500 font-medium"
+                className="text-pink-400 hover:text-pink-300 font-medium"
               >
                 Sign In
               </button>
@@ -204,10 +197,10 @@ export default function SignUpPage() {
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-gray-600" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">
+              <span className="px-2 bg-gray-800 text-gray-400">
                 .edu email required
               </span>
             </div>
