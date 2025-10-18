@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "GSU Student Center East - 1st Floor Restroom",
+    "position": [33.7550, -84.3865],
+    "items": ["pads", "tampons"]
+  },
+  {
+    "id": 2,
+    "name": "University Library North - Main Lobby",
+    "position": [33.7530, -84.3880],
+    "items": ["pads"]
+  },
+  {
+    "id": 3,
+    "name": "Sparks Hall - Near Room 250",
+    "position": [33.7538, -84.3855],
+    "items": ["pads", "tampons", "hair ties"]
+  },
+  {
+    "id": 4,
+    "name": "Aderhold Learning Center - 2nd Floor Commons",
+    "position": [33.7560, -84.3888],
+    "items": ["tampons"]
+  },
+  {
+    "id": 5,
+    "name": "Recreation Center - Women's Locker Room",
+    "position": [33.7575, -84.3850]
+  }
+]
+

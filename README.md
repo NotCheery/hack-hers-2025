@@ -5,6 +5,9 @@ Open vscode and terminal
 3. npm install
 4. npm run dev
 
+Install:
+Install this in terminal for map
+    npm install pigeon-maps
 
 
 Commit to the "MVP" (Minimum Viable Product):
