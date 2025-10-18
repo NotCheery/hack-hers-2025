@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
     MapPin, MessageSquare, User, Home, Plus, Star, ArrowLeft, Check, X, 
     Navigation, Moon, Sun, BrainCircuit, Settings as SettingsIcon, 
@@ -85,10 +85,10 @@ export default function ClutchWireframe() {
   const [requestSentTo, setRequestSentTo] = useState(null);
   const [selectedCampus, setSelectedCampus] = useState('Atlanta Campus');
 
-  const navigate = (screen) => {
+  const navigate = useCallback((screen) => {
     setPreviousScreen(currentScreen);
     setCurrentScreen(screen);
-  };
+  }, [currentScreen]);
 
   useEffect(() => {
     if (currentScreen === SCREENS.LOADING) {
@@ -658,7 +658,7 @@ export default function ClutchWireframe() {
             </div>
             <div className="flex-1 p-4 space-y-3 overflow-y-auto">
               <div className={`${darkMode ? 'bg-blue-900' : 'bg-blue-100'} p-3 rounded-2xl rounded-tl-none w-3/4`}><p className={`text-sm ${darkMode ? 'text-blue-100' : 'text-gray-900'}`}>Hi, I need period products</p></div>
-              <div className={`${darkMode ? 'bg-pink-900' : 'bg-pink-100'} p-3 rounded-2xl rounded-tr-none w-3/4 ml-auto`}><p className={`text-sm ${darkMode ? 'text-pink-100' : 'text-gray-900'}`}>I have tampons and pads available! We can meet at the Women's Center or I can drop off at your dorm.</p></div>
+              <div className={`${darkMode ? 'bg-pink-900' : 'bg-pink-100'} p-3 rounded-2xl rounded-tr-none w-3/4 ml-auto`}><p className={`text-sm ${darkMode ? 'text-pink-100' : 'text-gray-900'}`}>I have tampons and pads available! We can meet at the Women&apos;s Center or I can drop off at your dorm.</p></div>
             </div>
             <div className={`${t.card} border-t ${t.divider} p-4 flex gap-2`}> 
               <input type="text" placeholder="Type message..." className={`flex-1 ${t.input} p-3 rounded-full text-sm outline-none focus:ring-2 focus:ring-pink-500`}/>
