@@ -1,7 +1,9 @@
 'use client';
 
+import ClutchPigeonMap from '@/app/components/ClutchPigeonMap';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Timer, Mail, Lock } from 'lucide-react';
+
 
 
 /**The following are mock api calls, the real thing will use Axios**/
@@ -14,7 +16,7 @@ const mockApiCall = async (data) => {
       token: 'jwt-mock-token-12345', //real token will use bcrypt
     };
   } else {
-    return {
+    return {git
       success: false,
       message: 'Invalid credentials or account not found.',
     };
@@ -73,55 +75,7 @@ const ClutchAuthPage = () => {
     }
   }, [showMap, userLocation]);
 
-  // Initialize map when location is available
-  useEffect(() => {
-    if (showMap && userLocation && typeof window !== 'undefined') {
-      // Dynamically load Leaflet CSS and JS
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
 
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      script.onload = () => {
-        setTimeout(() => {
-          const mapContainer = document.getElementById('map');
-          if (mapContainer && window.L) {
-            // Clear any existing map
-            mapContainer.innerHTML = '';
-
-            // Create map
-            const map = window.L.map('map').setView([userLocation.lat, userLocation.lng], 15);
-
-            // Add tile layer
-            window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Add marker for user location
-            const customIcon = window.L.icon({
-              iconUrl: '/ClutchIcons/location.png',
-              iconSize: [32, 32],
-              iconAnchor: [16, 32],
-              popupAnchor: [0, -32]
-            });
-            const marker = window.L.marker([userLocation.lat, userLocation.lng], {icon: customIcon}).addTo(map);
-            marker.bindPopup('<b>You are here!</b>').openPopup();
-
-            // Add accuracy circle
-            window.L.circle([userLocation.lat, userLocation.lng], {
-              color: '#ec4899',
-              fillColor: '#ec4899',
-              fillOpacity: 0.1,
-              radius: userLocation.accuracy
-            }).addTo(map);
-          }
-        }, 100);
-      };
-      document.head.appendChild(script);
-    }
-  }, [showMap, userLocation]);
 
 
   const handleChange = (e) => {
@@ -278,7 +232,7 @@ const ClutchAuthPage = () => {
 
                     <div className="flex-1 relative">
                       {userLocation ? (
-                          <div id="map" className="w-full h-full"></div>
+                          <ClutchPigeonMap userLocation={userLocation} />
                       ) : (
                           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
                             <div className="text-center text-gray-500">
@@ -346,7 +300,7 @@ const ClutchAuthPage = () => {
                             onClick={() => setCurrentView('addRequest')}
                             className="bg-white rounded-xl shadow-lg border border-pink-200 p-4 sm:p-6 hover:shadow-xl transition flex flex-col items-center justify-center"
                         >
-                          <img src="/ClutchIcons/chat.png" alt="Add Request" className="h-10 w-10 sm:h-12 sm:w-12 mb-2" />
+                          <img src="/ClutchIcons/add.png" alt="Add Request" className="h-10 w-10 sm:h-12 sm:w-12 mb-2" />
                           <p className="font-medium text-pink-700 text-sm sm:text-base">Add Request</p>
                         </button>
 
@@ -354,7 +308,7 @@ const ClutchAuthPage = () => {
                             onClick={() => setCurrentView('community')}
                             className="bg-white rounded-xl shadow-lg border border-pink-200 p-4 sm:p-6 hover:shadow-xl transition flex flex-col items-center justify-center"
                         >
-                          <div className="text-3xl sm:text-4xl mb-2">💬</div>
+                          <img src="/ClutchIcons/chat.png" alt="Community" className="h-10 w-10 sm:h-12 sm:w-12 mb-2" />
                           <p className="font-medium text-pink-700 text-sm sm:text-base">Community</p>
                         </button>
 
@@ -362,7 +316,7 @@ const ClutchAuthPage = () => {
                             onClick={() => setCurrentView('help')}
                             className="bg-white rounded-xl shadow-lg border border-pink-200 p-4 sm:p-6 hover:shadow-xl transition flex flex-col items-center justify-center"
                         >
-                          <div className="text-3xl sm:text-4xl mb-2">❓</div>
+                          <img src="/ClutchIcons/caution.png" alt="Help" className="h-10 w-10 sm:h-12 sm:w-12 mb-2" />
                           <p className="font-medium text-pink-700 text-sm sm:text-base">Help</p>
                         </button>
                       </div>
