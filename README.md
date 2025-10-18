@@ -1,9 +1,15 @@
+# Clutch - Feminine Help on Standby
+
 For team!
 Open vscode and terminal
 1. Clone the repository: git clone <your-github-repository-url>
 2. cd hack-hers-2025
 3. npm install
 4. npm run dev
+
+## Latest Update
+- All ESLint errors fixed for production deployment
+- Ready for Vercel deployment
 
 
 
