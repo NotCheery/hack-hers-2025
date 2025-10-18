@@ -7,6 +7,7 @@ import {
     Shield, ChevronRight, Gift, Users, Send, Award, Bell, CheckCircle2, UserCheck, Map as MapIcon
 } from 'lucide-react';
 import AIMatchingComponent from '@/components/AIMatchingComponent';
+import PigeonMap from '@/app/components/PigeonMap';
 import { useAuth } from '@/contexts/AuthContext';
 
 const SCREENS = {
@@ -204,58 +205,6 @@ export default function ClutchWireframe() {
         </div>
     </div>
   );
-
-    const MockMapComponent = () => {
-        const LocationPin = ({ style }) => (
-            <div className="absolute" style={style}>
-                <svg width="24" height="24" viewBox="0 0 40 40" className="relative z-10 drop-shadow-lg">
-                    <path d="M20,40 C20,40 40,25 40,15 C40,6.7 31,0 20,0 C9,0 0,6.7 0,15 C0,25 20,40 20,40 Z" fill="#db2777" />
-                    <circle cx="20" cy="15" r="10" fill="white" />
-                </svg>
-            </div>
-        );
-
-        const UserPin = () => (
-             <div className="absolute z-20" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -100%)' }}>
-                 <div className="relative flex flex-col items-center">
-                    <div className="bg-white px-2 py-1 rounded-lg shadow-xl text-xs font-semibold whitespace-nowrap">
-                        You are here!
-                        <div className="absolute left-1/2 -translate-x-1/2 bottom-[-4px] w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-white"></div>
-                    </div>
-                    <svg width="32" height="32" viewBox="0 0 40 40" className="drop-shadow-lg mt-1">
-                        <path d="M20,40 C20,40 40,25 40,15 C40,6.7 31,0 20,0 C9,0 0,6.7 0,15 C0,25 20,40 20,40 Z" fill="#db2777" />
-                        <circle cx="20" cy="15" r="10" fill="white" />
-                        <path d="M20,8 L25,15 L20,22 L15,15 Z" fill="#db2777" />
-                    </svg>
-                    <div className="absolute top-10 w-12 h-12 bg-pink-500/30 rounded-full animate-pulse"></div>
-                 </div>
-            </div>
-        );
-
-        return (
-            <div className="w-full h-full bg-gray-200 dark:bg-gray-800 overflow-hidden relative">
-                {/* Grid Lines */}
-                <div className="absolute inset-0 grid grid-cols-10 grid-rows-10">
-                    {[...Array(100)].map((_, i) => (
-                        <div key={i} className="border border-gray-300/50 dark:border-gray-700/50"></div>
-                    ))}
-                </div>
-                {/* Mock Buildings */}
-                <div className="absolute top-[10%] left-[10%] w-[20%] h-[15%] bg-gray-300 dark:bg-gray-700 rounded"></div>
-                <div className="absolute top-[30%] left-[40%] w-[30%] h-[20%] bg-gray-300 dark:bg-gray-700 rounded"></div>
-                <div className="absolute top-[60%] left-[15%] w-[10%] h-[25%] bg-gray-300 dark:bg-gray-700 rounded"></div>
-                <div className="absolute top-[70%] left-[60%] w-[25%] h-[15%] bg-gray-300 dark:bg-gray-700 rounded"></div>
-                 {/* Mock Pins */}
-                <LocationPin style={{ top: '15%', left: '25%' }} />
-                <LocationPin style={{ top: '35%', left: '65%' }} />
-                <LocationPin style={{ top: '80%', left: '20%' }} />
-                <LocationPin style={{ top: '55%', left: '80%' }} />
-                <LocationPin style={{ top: '22%', left: '50%' }} />
-                {/* User Pin */}
-                <UserPin />
-            </div>
-        );
-    };
 
   const renderScreen = () => {
     // Loading state while checking authentication
@@ -731,7 +680,7 @@ export default function ClutchWireframe() {
             <div className="absolute top-0 left-0 right-0 p-2 text-white text-center text-sm z-20 pointer-events-none">
                 <span className="bg-black/50 px-3 py-1 rounded-full">Click anywhere on the map to flag a new location!</span>
             </div>
-            <MockMapComponent />
+            <PigeonMap />
                     </div>
                   </div>
       );
