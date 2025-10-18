@@ -42,19 +42,19 @@ const GSU_CAMPUSES = ['Atlanta Campus', 'Clarkston Campus', 'Alpharetta Campus',
 
 const allMatchesData = [
   { id: 1, name: 'Emma Chen', distance: '0.3 miles', items: 'Period Products', verified: true },
-  { id: 2, name: 'Women\'s Center', distance: '0.5 miles', items: 'All Items', verified: true },
+  { id: 2, name: 'Women&apos;s Center', distance: '0.5 miles', items: 'All Items', verified: true },
   { id: 3, name: 'Sarah Martinez', distance: '0.7 miles', items: 'Period Products', verified: false },
   { id: 4, name: 'Jessica B.', distance: '0.9 miles', items: 'Pain Relief', verified: false } 
 ];
 
 const dropOffSpots = [
-  { id: 1, name: 'GSU Women\'s Center', distance: '0.5 miles', verified: true },
+  { id: 1, name: 'GSU Women&apos;s Center', distance: '0.5 miles', verified: true },
   { id: 2, name: 'Midtown Community Clinic', distance: '1.2 miles', verified: true },
   { id: 3, name: 'Partner Store: Zara (Atlantic Station)', distance: '2.5 miles', verified: true },
 ];
 
 const communityPosts = [
-  { id: 1, thread: 'Restock Updates', content: 'Heads up! The Women\'s Center just got a huge donation of pads and tampons.', user: 'Anonymous', timestamp: '2h ago', verified: false },
+  { id: 1, thread: 'Restock Updates', content: 'Heads up! The Women&apos;s Center just got a huge donation of pads and tampons.', user: 'Anonymous', timestamp: '2h ago', verified: false },
   { id: 2, thread: 'Communal Hangouts / 3rd Spaces', content: 'Study group for finals at the GSU library, 3rd floor. Safe space, all welcome!', user: 'Maya J.', timestamp: '5h ago', verified: true },
   { id: 3, thread: 'Memes & Positivity', content: 'Just a reminder that you are all amazing and capable. You got this! ❤️', user: 'Anonymous', timestamp: '1d ago', verified: false },
   { id: 4, thread: 'Personal Stories', content: 'Feeling really overwhelmed with classes and personal stuff. Just needed to vent somewhere safe.', user: 'Anonymous', timestamp: '1d ago', verified: false },
@@ -64,7 +64,7 @@ const communityPosts = [
 const notificationsData = [
   { id: 1, type: 'chat_request', from: { name: 'Alex R.', verified: true }, item: 'Pain Relief', isContact: true, status: 'pending' },
   { id: 2, type: 'chat_request', from: { name: 'Anonymous', verified: false }, item: 'Period Products', isContact: false, status: 'pending' },
-  { id: 3, type: 'info', content: 'Your donation to GSU Women\'s Center has been logged.', status: 'read' },
+  { id: 3, type: 'info', content: 'Your donation to GSU Women&apos;s Center has been logged.', status: 'read' },
   { id: 4, type: 'chat_request', from: { name: 'Jordan P.', verified: true}, item: 'Hygiene Items', isContact: true, status: 'accepted' },
 ];
 
@@ -107,7 +107,7 @@ export default function ClutchWireframe() {
         setCurrentScreen(SCREENS.SPLASH);
       }
     }
-  }, [user, loading]);
+  }, [user, loading, navigate]);
 
   const theme = {
     dark: {
@@ -196,7 +196,7 @@ export default function ClutchWireframe() {
                     I Understand, Proceed
                 </button>
                  <button onClick={onWhitelist} className={`w-full ${t.bgSecondary} ${t.textSecondary} p-3 rounded-full font-semibold text-xs hover:opacity-80 transition`}>
-                    Proceed & Don't Warn Again for {match.name}
+                    Proceed & Don&apos;t Warn Again for {match.name}
                 </button>
                 <button onClick={onCancel} className={`w-full ${t.textTertiary} p-2 rounded-full font-semibold text-xs hover:opacity-80 transition`}>
                     Cancel
@@ -208,7 +208,7 @@ export default function ClutchWireframe() {
 
   const renderScreen = () => {
     // Loading state while checking authentication
-    if (loading) {
+  if (loading) {
       return (
         <div className="w-full h-screen bg-gradient-to-b from-black to-pink-900 flex flex-col items-center justify-center text-white">
           <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full mx-auto mb-6 flex items-center justify-center animate-pulse">
@@ -332,7 +332,7 @@ export default function ClutchWireframe() {
               <p className={`${t.textTertiary} text-sm font-semibold mb-3`}>Recent Activity</p>
               <div className="space-y-2">
                 <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className={`font-semibold text-sm ${t.text}`}>Requested: Period Products</p><p className={`text-xs ${t.textTertiary}`}>Request sent...</p></div>
-                <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className={`font-semibold text-sm ${t.text}`}>Donated: All items</p><p className={`text-xs ${t.textTertiary}`}>To Women's Center</p></div>
+                <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className={`font-semibold text-sm ${t.text}`}>Donated: All items</p><p className={`text-xs ${t.textTertiary}`}>To Women&apos;s Center</p></div>
               </div>
             </div>
           </div>
@@ -515,7 +515,7 @@ export default function ClutchWireframe() {
                     <PixelatedStarLogo className="w-20 h-20 text-white mb-6 animate-pulse" />
                     <h1 className="text-xl font-bold mb-2 text-center">Clutch AI is scouting the best options...</h1>
                 </div>
-            </div>
+                  </div>
         );
     }
 

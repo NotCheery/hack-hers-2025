@@ -99,7 +99,8 @@ export default function SignUpPage() {
               University Email
             </label>
             <div className="relative">
-              <img src="/ClutchIcons/envelope.png" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+
+              <img src="/ClutchIcons/envelope.png" alt="Email icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 id="email"
                 name="email"
@@ -120,7 +121,7 @@ export default function SignUpPage() {
               Password
             </label>
             <div className="relative">
-              <img src="/ClutchIcons/lock_alt.png" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <img src="/ClutchIcons/lock_alt.png" alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 id="password"
                 name="password"
@@ -141,7 +142,7 @@ export default function SignUpPage() {
               Confirm Password
             </label>
             <div className="relative">
-              <img src="/ClutchIcons/lock_alt.png" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <img src="/ClutchIcons/lock_alt.png" alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 id="confirmPassword"
                 name="confirmPassword"
