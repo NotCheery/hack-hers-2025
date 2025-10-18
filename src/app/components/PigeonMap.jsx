@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps';
 import UserLocationMarker from './UserLocationMarker'; // Imports your custom "You are here!" icon
 
@@ -9,6 +9,8 @@ export default function PigeonMap() {
   const [center, setCenter] = useState([33.7533, -84.3863]); // Centered on GSU
   const [zoom, setZoom] = useState(16);
   const [userLocation, setUserLocation] = useState(null);
+  const [mapDimensions, setMapDimensions] = useState({ width: '100%', height: 400 });
+  const containerRef = useRef(null);
 
   // This effect runs once when the component loads
   useEffect(() => {
@@ -30,6 +32,22 @@ export default function PigeonMap() {
         }
       );
     }
+
+    // 3. Set up resize observer for dynamic sizing
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMapDimensions({
+          width: rect.width || '100%',
+          height: Math.max(rect.height || 400, 400)
+        });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []); // The empty array ensures this effect only runs on the initial render
 
   // This function is called when a user clicks on the map
@@ -49,7 +67,7 @@ export default function PigeonMap() {
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={containerRef} className="relative w-full h-full min-h-[400px]">
       {/* On-screen instructions for the user */}
       <div className="absolute top-0 left-0 w-full p-4 z-10 bg-gradient-to-b from-black/50 to-transparent pointer-events-none">                                                                                       
         <p className="text-center text-white text-lg font-semibold shadow-lg">Click anywhere on the map to flag a new location!</p>                                                                                   
@@ -57,8 +75,8 @@ export default function PigeonMap() {
 
       {/* The main map container */}
       <Map 
-        height="100%" 
-        width="100%"
+        height={mapDimensions.height} 
+        width={mapDimensions.width}
         center={center} 
         zoom={zoom} 
         onBoundsChanged={({ center, zoom }) => { 

@@ -676,11 +676,13 @@ export default function ClutchWireframe() {
             <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
             <h2 className="text-2xl font-bold">Nearby Providers</h2>
           </div>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative min-h-[400px]">
             <div className="absolute top-0 left-0 right-0 p-2 text-white text-center text-sm z-20 pointer-events-none">
                 <span className="bg-black/50 px-3 py-1 rounded-full">Click anywhere on the map to flag a new location!</span>
             </div>
-            <PigeonMap />
+            <div className="w-full h-full">
+              <PigeonMap />
+            </div>
                     </div>
                   </div>
       );
