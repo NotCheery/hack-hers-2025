@@ -9,7 +9,7 @@ export default function PigeonMap() {
   const [center, setCenter] = useState([33.7533, -84.3863]); // Centered on GSU
   const [zoom, setZoom] = useState(16);
   const [userLocation, setUserLocation] = useState(null);
-  const [mapDimensions, setMapDimensions] = useState({ width: '100%', height: 400 });
+  const [mapDimensions, setMapDimensions] = useState({ width: 800, height: 400 });
   const containerRef = useRef(null);
 
   // This effect runs once when the component loads
@@ -38,7 +38,7 @@ export default function PigeonMap() {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         setMapDimensions({
-          width: rect.width || '100%',
+          width: rect.width || 800,
           height: Math.max(rect.height || 400, 400)
         });
       }

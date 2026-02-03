@@ -38,4 +38,7 @@ To get the project running on your computer, follow these steps:
 1. Clone the repository: git clone <your-github-repository-url>
 2. cd hack-hers-2025
 3. npm install
-4. npm run dev
+4. npm install firebase
+5. npm install react-leaflet leaflet
+6. npm install leaflet-routing-machine
+6. npm run dev
