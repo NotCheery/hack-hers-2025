@@ -1,4 +1,7 @@
 'use client';
+import Link from 'next/link';
+import 'leaflet/dist/leaflet.css'; 
+import RealMap from '@/components/RealMap'; 
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
@@ -41,16 +44,16 @@ const PixelatedStarLogo = ({ className, ...props }) => (
 const GSU_CAMPUSES = ['Atlanta Campus', 'Clarkston Campus', 'Alpharetta Campus', 'Decatur Campus', 'Dunwoody Campus', 'Newton Campus'];
 
 const allMatchesData = [
-  { id: 1, name: 'Emma Chen', distance: '0.3 miles', items: 'Period Products', verified: true },
-  { id: 2, name: 'Women&apos;s Center', distance: '0.5 miles', items: 'All Items', verified: true },
-  { id: 3, name: 'Sarah Martinez', distance: '0.7 miles', items: 'Period Products', verified: false },
-  { id: 4, name: 'Jessica B.', distance: '0.9 miles', items: 'Pain Relief', verified: false } 
+  { id: 1, name: 'Emma Chen', distance: '0.3 miles', items: 'Period Products', verified: true, lat: 33.7535, lng: -84.3853 },
+  { id: 2, name: 'Women&apos;s Center', distance: '0.5 miles', items: 'All Items', verified: true, lat: 33.7528, lng: -84.3848 },
+  { id: 3, name: 'Sarah Martinez', distance: '0.7 miles', items: 'Period Products', verified: false, lat: 33.7540, lng: -84.3860 },
+  { id: 4, name: 'Jessica B.', distance: '0.9 miles', items: 'Pain Relief', verified: false, lat: 33.7510, lng: -84.3870 } 
 ];
 
 const dropOffSpots = [
-  { id: 1, name: 'GSU Women&apos;s Center', distance: '0.5 miles', verified: true },
-  { id: 2, name: 'Midtown Community Clinic', distance: '1.2 miles', verified: true },
-  { id: 3, name: 'Partner Store: Zara (Atlantic Station)', distance: '2.5 miles', verified: true },
+  { id: 1, name: 'GSU Women&apos;s Center', distance: '0.5 miles', verified: true, lat: 33.7528, lng: -84.3848 },
+  { id: 2, name: 'Midtown Community Clinic', distance: '1.2 miles', verified: true, lat: 33.7800, lng: -84.3800 },
+  { id: 3, name: 'Partner Store: Zara (Atlantic Station)', distance: '2.5 miles', verified: true, lat: 33.7925, lng: -84.3963 },
 ];
 
 const communityPosts = [
@@ -88,26 +91,31 @@ export default function ClutchWireframe() {
   const navigate = useCallback((screen) => {
     setPreviousScreen(currentScreen);
     setCurrentScreen(screen);
-  }, [currentScreen]);
-
-  useEffect(() => {
-    if (currentScreen === SCREENS.LOADING) {
-      const timer = setTimeout(() => { navigate(SCREENS.AI_MATCHING); }, 2000); 
-      return () => clearTimeout(timer);
-    }
-  }, [currentScreen]);
+  }, []);
 
   useEffect(() => {
     if (!loading) {
       if (user) {
-        // User is authenticated, go to home screen
+        // if user authenticated, go to home screen
         setCurrentScreen(SCREENS.HOME);
       } else {
-        // User is not authenticated, show splash screen
+        //user not authenticated, show splash screen
         setCurrentScreen(SCREENS.SPLASH);
       }
     }
-  }, [user, loading, navigate]);
+  }, [user, loading]);
+
+  // useEffect(() => {
+  //   if (!loading) {
+  //     if (user) {
+  //       // User is authenticated, go to home screen
+  //       setCurrentScreen(SCREENS.HOME);
+  //     } else {
+  //       // User is not authenticated, show splash screen
+  //       setCurrentScreen(SCREENS.SPLASH);
+  //     }
+  //   }
+  // }, [user, loading, navigate]);
 
   const theme = {
     dark: {
@@ -322,6 +330,7 @@ export default function ClutchWireframe() {
                 <Gift size={24} /> Give
               </button>
                <button 
+                type='button'
                 onClick={() => navigate(SCREENS.REQUEST)} 
                 className="flex-1 bg-pink-500 hover:bg-pink-600 text-white p-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition shadow-lg hover:shadow-xl"
               >
@@ -341,9 +350,13 @@ export default function ClutchWireframe() {
             <button onClick={() => navigate(SCREENS.COMMUNITY)} className={`flex-1 py-3 ${t.bgSecondary} ${t.textSecondary} rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:opacity-80 transition text-xs`}>
               <Users className="w-5 h-5"/> Community
             </button>
-            <button onClick={() => navigate(SCREENS.MAP)} className={`flex-1 py-3 ${t.bgSecondary} ${t.textSecondary} rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:opacity-80 transition text-xs`}>
-              <MapPin size={20} /> Map
-            </button>
+            <Link 
+            href="/map" 
+            className={`flex-1 py-3 ${t.bgSecondary} ${t.textSecondary} rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:opacity-80 transition text-xs`}
+            >
+              <MapPin size={20} /> 
+              <span>Map</span>
+            </Link>
           </div>
         </div>
       );
@@ -681,7 +694,7 @@ export default function ClutchWireframe() {
                 <span className="bg-black/50 px-3 py-1 rounded-full">Click anywhere on the map to flag a new location!</span>
             </div>
             <div className="w-full h-full">
-              <PigeonMap />
+              <RealMap />
             </div>
                     </div>
                   </div>
