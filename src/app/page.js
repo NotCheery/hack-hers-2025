@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import 'leaflet/dist/leaflet.css'; 
 import RealMap from '@/components/RealMap'; 
+import { organizations } from '@/lib/locations';  // New: Import organization data
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
@@ -32,7 +33,21 @@ const SCREENS = {
   PROFILE: 'profile',
   SETTINGS: 'settings',
   AI_PERMISSIONS: 'ai_permissions',
+  SELECT_SOURCE: 'select_source', //new screen for selecting orgs or people
+  DIRECTIONS_MAP: 'directions_map'//new screen for map with directions
 };
+// get mileage distance from user location to org location
+function getDistance(lat1, lng1, lat2, lng2) {
+  if (!lat1 || !lng1 || !lat2 || !lng2) return 'Calculating...';  // Fallback if location data is missing
+  const R = 3959; // Radius of Earth in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return (R * c).toFixed(1) + ' miles';
+}
 
 const PixelatedStarLogo = ({ className, ...props }) => (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -48,12 +63,6 @@ const allMatchesData = [
   { id: 2, name: 'Women&apos;s Center', distance: '0.5 miles', items: 'All Items', verified: true, lat: 33.7528, lng: -84.3848 },
   { id: 3, name: 'Sarah Martinez', distance: '0.7 miles', items: 'Period Products', verified: false, lat: 33.7540, lng: -84.3860 },
   { id: 4, name: 'Jessica B.', distance: '0.9 miles', items: 'Pain Relief', verified: false, lat: 33.7510, lng: -84.3870 } 
-];
-
-const dropOffSpots = [
-  { id: 1, name: 'GSU Women&apos;s Center', distance: '0.5 miles', verified: true, lat: 33.7528, lng: -84.3848 },
-  { id: 2, name: 'Midtown Community Clinic', distance: '1.2 miles', verified: true, lat: 33.7800, lng: -84.3800 },
-  { id: 3, name: 'Partner Store: Zara (Atlantic Station)', distance: '2.5 miles', verified: true, lat: 33.7925, lng: -84.3963 },
 ];
 
 const communityPosts = [
@@ -87,6 +96,29 @@ export default function ClutchWireframe() {
   const [sentRequests, setSentRequests] = useState([]); 
   const [requestSentTo, setRequestSentTo] = useState(null);
   const [selectedCampus, setSelectedCampus] = useState('Atlanta Campus');
+  const [directionsStarted, setDirectionsStarted] = useState(false);  // New: Track if directions have started
+  const [selectedSourceType, setSelectedSourceType] = useState('org');  // New: 'org' or 'person'
+  const [selectedSource, setSelectedSource] = useState(null);  // New: Selected org or person
+  const [userLocation, setUserLocation] = useState(null);  // New: Store user's lat/lng
+
+  // New: Get user location on component mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        },
+        (err) => {
+          console.error('Geolocation error:', err);
+          // Fallback to a default GSU location if geolocation fails
+          setUserLocation({ lat: 33.7535, lng: -84.3853 });
+        }
+      );
+    } else {
+      // Fallback
+      setUserLocation({ lat: 33.7535, lng: -84.3853 });
+    }
+  }, []);
 
   const navigate = useCallback((screen) => {
     setPreviousScreen(currentScreen);
@@ -136,7 +168,7 @@ export default function ClutchWireframe() {
     if (selectedChat) { setSelectedChat(null); return; }
     if (selectedMatch) { setSelectedMatch(null); return; }
     if (currentScreen === SCREENS.ALL_MATCHES) { setCurrentScreen(SCREENS.MATCHES); return; }
-    if ([SCREENS.COMMUNITY, SCREENS.GIVE, SCREENS.NOTIFICATIONS, SCREENS.REQUEST_SENT, SCREENS.MAP].includes(currentScreen)) { setCurrentScreen(SCREENS.HOME); return; }
+    if ([SCREENS.COMMUNITY, SCREENS.GIVE, SCREENS.NOTIFICATIONS, SCREENS.REQUEST_SENT, SCREENS.MAP, SCREENS.SELECT_SOURCE, SCREENS.DIRECTIONS_MAP].includes(currentScreen)) { setCurrentScreen(SCREENS.HOME); return; }
     setCurrentScreen(previousScreen);
   };
   
@@ -364,6 +396,10 @@ export default function ClutchWireframe() {
 
     // Screen: Give / Donate
     if (currentScreen === SCREENS.GIVE) {
+      const dropOffSpots = organizations.map(org => ({
+      ...org,
+      distance: getDistance(userLocation?.lat, userLocation?.lng, org.lat, org.lng),
+      }));
       return (
         <div className={`w-full h-screen ${t.bg} flex flex-col`}> 
           <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
@@ -499,52 +535,162 @@ export default function ClutchWireframe() {
     }
 
     // Request Screen
-    if (currentScreen === SCREENS.REQUEST) {
-        return (
-          <div className={`w-full h-screen bg-gradient-to-b ${t.bg} flex flex-col`}> 
-            <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
-              <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
-              <h2 className="text-2xl font-bold">What Do You Need?</h2>
-            </div>
-            <div className="flex-1 p-6 space-y-3">
-              {['Period Products', 'Pain Relief', 'Hygiene Items', 'Other'].map((item) => (
-                <button key={item} onClick={() => { setRequestItem(item); navigate(SCREENS.LOADING); }} className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-md transition font-semibold ${t.textSecondary} border-2 border-transparent hover:border-pink-500`}>
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-    }
- 
-    // Loading Screen
-    if (currentScreen === SCREENS.LOADING) {
-        return (
-            <div className={`relative w-full h-screen bg-gradient-to-b from-black to-pink-900 flex flex-col items-center justify-center ${t.text} overflow-hidden`}>
-                <PixelatedStarLogo className="absolute w-32 h-32 text-white/10 top-10 left-10 animate-pulse" style={{ animationDuration: '3s' }}/>
-                <PixelatedStarLogo className="absolute w-24 h-24 text-white/5 bottom-20 right-5 animate-pulse" style={{ animationDuration: '4s' }}/>
-                <PixelatedStarLogo className="absolute w-48 h-48 text-white/10 top-1/2 left-1/4 animate-pulse" style={{ animationDuration: '5s' }}/>
-                <div className="z-10 flex flex-col items-center p-4">
-                    <PixelatedStarLogo className="w-20 h-20 text-white mb-6 animate-pulse" />
-                    <h1 className="text-xl font-bold mb-2 text-center">Clutch AI is scouting the best options...</h1>
-                </div>
-                  </div>
-        );
-    }
+  if (currentScreen === SCREENS.REQUEST) {
+    return (
+      <div className={`w-full h-screen bg-gradient-to-b ${t.bg} flex flex-col`}> 
+        <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
+          <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
+          <h2 className="text-2xl font-bold">What Do You Need?</h2>
+        </div>
+        <div className="flex-1 p-6 space-y-3">
+          {['Period Products', 'Pain Relief', 'Hygiene Items', 'Other'].map((item) => (
+            <button key={item} onClick={() => { setRequestItem(item); navigate(SCREENS.SELECT_SOURCE); }} className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-md transition font-semibold ${t.textSecondary} border-2 border-transparent hover:border-pink-500`}>
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-    // AI Matching Screen
-    if (currentScreen === SCREENS.AI_MATCHING) {
-        return (
-            <AIMatchingComponent 
-                itemType={requestItem}
-                onMatchSelected={(match) => {
-                    setSelectedMatch(match);
-                    navigate(SCREENS.MATCHES);
-                }}
-                onBack={() => navigate(SCREENS.REQUEST)}
-            />
-        );
-    }
+  // new: SELECT_SOURCE screen with tabs for orgs + people
+  if (currentScreen === SCREENS.SELECT_SOURCE) {
+    const tabs = ['Organizations', 'People'];
+    const activeTab = selectedSourceType === 'org' ? 'Organizations' : 'People';
+    // Filter organizations based on requested item and calculate distances
+    const filteredOrgs = organizations.filter(org => org.items === 'All Items' || org.items.includes(requestItem)).map(org => ({
+      ...org,
+      distance: getDistance(userLocation?.lat, userLocation?.lng, org.lat, org.lng),  // Calculate accurate distance
+    }));
+
+    // Keep people filtering as is (using allMatchesData)
+    const people = allMatchesData.filter(person => person.items === requestItem || person.items === 'All Items');
+  
+    return (
+    <div className={`w-full h-screen ${t.bg} flex flex-col`}>
+      <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
+        <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
+        <h2 className="text-2xl font-bold">Select a Source for {requestItem}</h2>
+      </div>
+      <div className={`p-2 border-b ${t.border}`}>
+        <div className="flex space-x-2 overflow-x-auto hide-scrollbar">
+          {tabs.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setSelectedSourceType(tab === 'Organizations' ? 'org' : 'person')}
+              className={`px-4 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition ${activeTab === tab ? 'bg-pink-500 text-white' : `${t.bgSecondary} ${t.textSecondary}`}`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex-1 p-6 space-y-3 overflow-y-auto">
+        {selectedSourceType === 'org' ? (
+          filteredOrgs.length > 0 ? filteredOrgs.map((org) => (
+            <button
+              key={org.id}
+              onClick={() => { setSelectedSource(org); navigate(SCREENS.DIRECTIONS_MAP); }}
+              className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 border-pink-500`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className={`font-bold ${t.text}`}>{org.name}</p>
+                  <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {org.distance}</p>
+                </div>
+                {org.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
+              </div>
+              <p className={`text-sm ${t.textSecondary}`}>{org.items}</p>
+            </button>
+          )) : <p className={`text-center ${t.textTertiary} mt-8`}>No organizations available for {requestItem}.</p>
+        ) : (
+          people.length > 0 ? people.map((person) => (
+            <button
+              key={person.id}
+              onClick={() => { setSelectedSource(person); navigate(SCREENS.DIRECTIONS_MAP); }}
+              className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 ${person.verified ? 'border-pink-500' : 'border-gray-500'}`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className={`font-bold ${t.text}`}>{person.name}</p>
+                  <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {person.distance}</p>
+                </div>
+                {person.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
+              </div>
+              <p className={`text-sm ${t.textSecondary}`}>{person.items}</p>
+            </button>
+          )) : <p className={`text-center ${t.textTertiary} mt-8`}>No people available for {requestItem}.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+  // DIRECTIONS_MAP screen with map, directions, and start button
+  if (currentScreen === SCREENS.DIRECTIONS_MAP) {
+    const handleGetDirections = () => {
+      if (userLocation && selectedSource) {
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${selectedSource.lat},${selectedSource.lng}&travelmode=walking`;
+        window.open(url, '_blank');  // Opens in new tab or Google Maps app
+      } else {
+        alert('Unable to get location. Please enable location services.');
+      }
+    };
+
+    return (
+      <div className={`w-full h-screen ${t.bg} flex flex-col items-center justify-center p-6`}>
+        <div className={`${t.card} p-6 rounded-2xl shadow-lg max-w-sm w-full text-center`}>
+          <h2 className={`text-xl font-bold mb-4 ${t.text}`}>Directions to {selectedSource.name}</h2>
+          <p className={`text-sm ${t.textSecondary} mb-6`}>Distance: {selectedSource.distance}</p>
+          <div className="space-y-3">
+            <button
+              onClick={handleGetDirections}
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white p-4 rounded-full font-semibold transition"
+            >
+              Get Directions
+            </button>
+            <button
+              onClick={() => navigate(SCREENS.SELECT_SOURCE)}
+              className={`w-full ${t.bgSecondary} ${t.textSecondary} p-4 rounded-full font-semibold hover:opacity-80 transition`}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+ 
+    // //commented out loading + AI matching screen (no longer used)
+    // // Loading Screen
+    // if (currentScreen === SCREENS.LOADING) {
+    //     return (
+    //         <div className={`relative w-full h-screen bg-gradient-to-b from-black to-pink-900 flex flex-col items-center justify-center ${t.text} overflow-hidden`}>
+    //             <PixelatedStarLogo className="absolute w-32 h-32 text-white/10 top-10 left-10 animate-pulse" style={{ animationDuration: '3s' }}/>
+    //             <PixelatedStarLogo className="absolute w-24 h-24 text-white/5 bottom-20 right-5 animate-pulse" style={{ animationDuration: '4s' }}/>
+    //             <PixelatedStarLogo className="absolute w-48 h-48 text-white/10 top-1/2 left-1/4 animate-pulse" style={{ animationDuration: '5s' }}/>
+    //             <div className="z-10 flex flex-col items-center p-4">
+    //                 <PixelatedStarLogo className="w-20 h-20 text-white mb-6 animate-pulse" />
+    //                 <h1 className="text-xl font-bold mb-2 text-center">Clutch AI is scouting the best options...</h1>
+    //             </div>
+    //               </div>
+    //     );
+    // }
+
+    // // AI Matching Screen
+    // if (currentScreen === SCREENS.AI_MATCHING) {
+    //     return (
+    //         <AIMatchingComponent 
+    //             itemType={requestItem}
+    //             onMatchSelected={(match) => {
+    //                 setSelectedMatch(match);
+    //                 navigate(SCREENS.MATCHES);
+    //             }}
+    //             onBack={() => navigate(SCREENS.REQUEST)}
+    //         />
+    //     );
+    // }
 
     // Matches Screen (AI Curated)
     if (currentScreen === SCREENS.MATCHES && !selectedMatch) {
