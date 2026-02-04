@@ -3,6 +3,11 @@ import Link from 'next/link';
 import 'leaflet/dist/leaflet.css'; 
 import RealMap from '@/components/RealMap'; 
 import { organizations } from '@/lib/locations';  // New: Import organization data
+import { useRouter } from 'next/navigation';
+
+// src/components/screens
+import ProfileScreen from '@/components/screens/ProfileScreen';
+import HomeScreen from '@/components/screens/HomeScreen';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
@@ -100,6 +105,7 @@ export default function ClutchWireframe() {
   const [selectedSourceType, setSelectedSourceType] = useState('org');  // New: 'org' or 'person'
   const [selectedSource, setSelectedSource] = useState(null);  // New: Selected org or person
   const [userLocation, setUserLocation] = useState(null);  // New: Store user's lat/lng
+  const router = useRouter();
 
   // New: Get user location on component mount
   useEffect(() => {
@@ -193,6 +199,7 @@ export default function ClutchWireframe() {
     try {
       await logOut();
       setCurrentScreen(SCREENS.SPLASH);
+      setPreviousScreen(SCREENS.SPLASH);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -267,7 +274,11 @@ export default function ClutchWireframe() {
           <PixelatedStarLogo className="w-16 h-16 text-white mb-4" />
           <h1 className="text-5xl font-emblema-one mb-2">CLUTCH</h1>
           <p className="text-pink-200 mb-8">Feminine Help on Standby</p>
-          <button onClick={() => window.location.href = '/login'} className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-caprasimo text-lg transition">Get Started</button>
+          <button 
+          onClick={() => {
+            window.location.href = '/login';
+          }}
+          className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-caprasimo text-lg transition">Get Started</button>
       </div>
     );
   }
@@ -330,69 +341,19 @@ export default function ClutchWireframe() {
         )
     }
 
-    // Home Screen
-    if (currentScreen === SCREENS.HOME) {
-      return (
-        <div className={`w-full h-screen ${t.bg} flex flex-col`}> 
-          <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 rounded-b-2xl flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button onClick={() => navigate(SCREENS.PROFILE)} className="w-10 h-10 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center text-white font-semibold hover:opacity-90 transition">M</button>
-              <div>
-                <h2 className="text-2xl font-bold mb-1">Welcome, User</h2>
-                <p className="text-pink-200 text-sm">{selectedCampus}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => navigate(SCREENS.NOTIFICATIONS)} className="relative p-2 rounded-full hover:bg-white/10 transition">
-                <Bell size={22} />
-                <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500"></span>
-              </button>
-              <button onClick={handleLogout} className="p-2 rounded-full hover:bg-white/10 transition" title="Logout">
-                <User size={22} />
-              </button>
-              <ThemeToggle />
-                    </div>
-                  </div>
-          <div className="flex-1 p-6 space-y-4">
-            <div className="flex gap-4 items-stretch">
-              <button 
-                onClick={() => navigate(SCREENS.GIVE)} 
-                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white p-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition shadow-lg hover:shadow-xl"
-              >
-                <Gift size={24} /> Give
-              </button>
-               <button 
-                type='button'
-                onClick={() => navigate(SCREENS.REQUEST)} 
-                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white p-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition shadow-lg hover:shadow-xl"
-              >
-                <Plus size={24} /> Request
-               </button>
-            </div>
-            <div className={`${t.card} p-4 rounded-2xl shadow`}> 
-              <p className={`${t.textTertiary} text-sm font-semibold mb-3`}>Recent Activity</p>
-              <div className="space-y-2">
-                <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className={`font-semibold text-sm ${t.text}`}>Requested: Period Products</p><p className={`text-xs ${t.textTertiary}`}>Request sent...</p></div>
-                <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className={`font-semibold text-sm ${t.text}`}>Donated: All items</p><p className={`text-xs ${t.textTertiary}`}>To Women&apos;s Center</p></div>
-              </div>
-            </div>
-          </div>
-          <div className={`${t.card} border-t ${t.divider} p-4 flex gap-3`}> 
-            <button onClick={() => navigate(SCREENS.HOME)} className="flex-1 py-3 bg-black text-white rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:bg-gray-900 transition text-xs"><Home size={20} /> Home</button>
-            <button onClick={() => navigate(SCREENS.COMMUNITY)} className={`flex-1 py-3 ${t.bgSecondary} ${t.textSecondary} rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:opacity-80 transition text-xs`}>
-              <Users className="w-5 h-5"/> Community
-            </button>
-            <Link 
-            href="/map" 
-            className={`flex-1 py-3 ${t.bgSecondary} ${t.textSecondary} rounded-full font-semibold flex flex-col items-center justify-center gap-1 hover:opacity-80 transition text-xs`}
-            >
-              <MapPin size={20} /> 
-              <span>Map</span>
-            </Link>
-          </div>
-        </div>
-      );
-    }
+// Home Screen
+if (currentScreen === SCREENS.HOME) {
+  return (
+    <HomeScreen 
+      t={t}
+      navigate={navigate}
+      SCREENS={SCREENS}
+      selectedCampus={selectedCampus}
+      darkMode={darkMode}
+      setDarkMode={setDarkMode}
+    />
+  );
+}
 
     // Screen: Give / Donate
     if (currentScreen === SCREENS.GIVE) {
@@ -847,52 +808,22 @@ export default function ClutchWireframe() {
       );
     }
 
-    // Profile Screen
-    if (currentScreen === SCREENS.PROFILE) {
-        return (
-          <div className={`w-full h-screen bg-gradient-to-b ${t.bg} flex flex-col`}> 
-            <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
-                <h2 className="text-2xl font-bold">My Profile</h2>
-              </div>
-              <button onClick={handleLogout} className="p-2 rounded-full hover:bg-white/10 transition" title="Logout">
-                <User size={22} />
-              </button>
-            </div>
-            <div className="flex-1 p-6 space-y-4 overflow-y-auto">
-              <div className={`${t.card} p-6 rounded-2xl shadow text-center`}> 
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl">M</div>
-                <p className={`font-bold text-lg ${t.text}`}>Maya Johnson</p>
-                <div className="relative mt-2">
-                    <select
-                        value={selectedCampus}
-                        onChange={(e) => setSelectedCampus(e.target.value)}
-                        className={`w-full appearance-none ${t.input} ${t.textSecondary} text-sm font-semibold p-2 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500`}
-                    >
-                        {GSU_CAMPUSES.map(campus => (
-                            <option key={campus} value={campus}>{campus}</option>
-                        ))}
-                    </select>
-                    <ChevronRight size={16} className={`absolute right-3 top-1/2 -translate-y-1/2 ${t.textTertiary} pointer-events-none`} />
-                </div>
-                <p className="flex items-center justify-center gap-1 text-yellow-500 mt-4"><Star size={16} className="fill-yellow-400" /> Verified</p>
-              </div>
-              <div className={`${t.card} p-4 rounded-2xl shadow`}> 
-                <p className={`font-semibold ${t.text} mb-3`}>Stats</p>
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">5</p><p className={`text-xs ${t.textTertiary}`}>Requests</p></div>
-                  <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">8</p><p className={`text-xs ${t.textTertiary}`}>Helped</p></div>
-                  <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">12</p><p className={`text-xs ${t.textTertiary}`}>Donated</p></div>
-                        </div>
-                      </div>
-               <button className={`w-full ${t.card} p-4 rounded-2xl shadow font-semibold ${t.textSecondary} ${t.cardHover} transition flex justify-between items-center`}><span><Award size={20} className="inline mr-2" />My Coupons</span><ChevronRight size={20} /></button>
-              <button onClick={() => navigate(SCREENS.SETTINGS)} className={`w-full ${t.card} p-4 rounded-2xl shadow font-semibold ${t.textSecondary} ${t.cardHover} transition flex justify-between items-center`}><span><SettingsIcon size={20} className="inline mr-2" />Settings</span><ChevronRight size={20} /></button>
-                    </div>
-                  </div>
-        );
-    }
-
+// Profile Screen
+if (currentScreen === SCREENS.PROFILE) {
+  return (
+    <ProfileScreen 
+      t={t}
+      goBack={goBack => navigate(SCREENS.HOME)}
+      navigate={navigate}
+      handleLogout={handleLogout}
+      SCREENS={SCREENS}
+      selectedCampus={selectedCampus}
+      setSelectedCampus={setSelectedCampus}
+      GSU_CAMPUSES={GSU_CAMPUSES}
+      user={user}
+    />
+  );
+}
     // Settings Screen
     if (currentScreen === SCREENS.SETTINGS) {
         return (
