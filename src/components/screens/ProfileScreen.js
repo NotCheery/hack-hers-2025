@@ -12,12 +12,40 @@ export default function ProfileScreen({
   selectedCampus, 
   setSelectedCampus, 
   GSU_CAMPUSES,
-  user 
+  user,
+  updateUserProfile
 }) {
   const [userFirstName, setUserFirstName] = useState('Maya');
   const [userLastName, setUserLastName] = useState('Johnson');
   const [userMiddleName, setUserMiddleName] = useState('');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [originalFirstName, setOriginalFirstName] = useState('Maya');
+  const [originalLastName, setOriginalLastName] = useState('Johnson');
+  const [originalMiddleName, setOriginalMiddleName] = useState('');
+
+  // Initialize names from user's displayName if available
+  React.useEffect(() => {
+    if (user?.displayName) {
+      const nameParts = user.displayName.split(' ');
+      const firstName = nameParts[0] || 'Maya';
+      let middleName = '';
+      let lastName = 'Johnson';
+      
+      if (nameParts.length > 2) {
+        middleName = nameParts.slice(1, -1).join(' ');
+        lastName = nameParts[nameParts.length - 1];
+      } else if (nameParts.length === 2) {
+        lastName = nameParts[1] || 'Johnson';
+      }
+      
+      setUserFirstName(firstName);
+      setUserLastName(lastName);
+      setUserMiddleName(middleName);
+      setOriginalFirstName(firstName);
+      setOriginalLastName(lastName);
+      setOriginalMiddleName(middleName);
+    }
+  }, [user?.displayName]);
 
   return (
     <div className={`w-full h-screen bg-gradient-to-b ${t.bg} flex flex-col`}> 
@@ -39,56 +67,85 @@ export default function ProfileScreen({
             <>
               <p className={`font-bold text-lg ${t.text}`}>{userFirstName} {userMiddleName && userMiddleName + ' '} {userLastName}</p>
               <p className={`text-sm ${t.textSecondary} mb-4`}>{user?.email}</p>
-              <button onClick={() => setIsEditingProfile(true)} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-semibold transition">Edit Profile</button>
+              <button onClick={() => {
+                setOriginalFirstName(userFirstName);
+                setOriginalLastName(userLastName);
+                setOriginalMiddleName(userMiddleName);
+                setIsEditingProfile(true);
+              }} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-semibold transition">Edit Profile</button>
             </>
           ) : (
-            <div className="space-y-3 mt-4">
-              <div>
-                <label className={`block text-sm font-semibold ${t.text} mb-1`}>First Name</label>
-                <input 
-                  type="text" 
-                  value={userFirstName} 
-                  onChange={(e) => setUserFirstName(e.target.value)}
-                  className={`w-full ${t.input} p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500`}
-                />
-              </div>
-              <div>
-                <label className={`block text-sm font-semibold ${t.text} mb-1`}>Middle Name (Optional)</label>
-                <input 
-                  type="text" 
-                  value={userMiddleName} 
-                  onChange={(e) => setUserMiddleName(e.target.value)}
-                  placeholder="Leave blank if you don't have one"
-                  className={`w-full ${t.input} p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500`}
-                />
-              </div>
-              <div>
-                <label className={`block text-sm font-semibold ${t.text} mb-1`}>Last Name</label>
-                <input 
-                  type="text" 
-                  value={userLastName} 
-                  onChange={(e) => setUserLastName(e.target.value)}
-                  className={`w-full ${t.input} p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500`}
-                />
-              </div>
-              <div className="flex gap-2 mt-4">
-                <button 
-                  onClick={() => setIsEditingProfile(false)}
-                  className="flex-1 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition"
-                >
-                  Save Changes
-                </button>
-                <button 
-                  onClick={() => {
-                    setUserFirstName('Maya');
-                    setUserLastName('Johnson');
-                    setUserMiddleName('');
-                    setIsEditingProfile(false);
-                  }}
-                  className={`flex-1 ${t.bgSecondary} ${t.textSecondary} px-4 py-2 rounded-full text-sm font-semibold hover:opacity-80 transition`}
-                >
-                  Cancel
-                </button>
+            <div className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4`}>
+              <div className={`${t.card} rounded-2xl p-8 max-w-md w-full shadow-2xl`}>
+                <h3 className={`font-bold text-2xl ${t.text} mb-6 text-center`}>Edit Your Profile</h3>
+                
+                {/* Name Preview */}
+                <div className={`${t.bgSecondary} p-4 rounded-xl mb-6 text-center`}>
+                  <p className={`text-xs ${t.textTertiary} mb-2`}>Your new name</p>
+                  <p className={`font-bold text-lg ${t.text}`}>
+                    {userFirstName} {userMiddleName && userMiddleName + ' '} {userLastName}
+                  </p>
+                </div>
+
+                {/* Form Fields */}
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>First Name *</label>
+                    <input 
+                      type="text" 
+                      value={userFirstName} 
+                      onChange={(e) => setUserFirstName(e.target.value)}
+                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      placeholder="Enter your first name"
+                    />
+                  </div>
+                  <div>
+                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>Middle Name</label>
+                    <input 
+                      type="text" 
+                      value={userMiddleName} 
+                      onChange={(e) => setUserMiddleName(e.target.value)}
+                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      placeholder="Optional"
+                    />
+                  </div>
+                  <div>
+                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>Last Name *</label>
+                    <input 
+                      type="text" 
+                      value={userLastName} 
+                      onChange={(e) => setUserLastName(e.target.value)}
+                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      placeholder="Enter your last name"
+                    />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <button 
+                    onClick={async () => {
+                      if (updateUserProfile) {
+                        await updateUserProfile(userFirstName, userMiddleName, userLastName);
+                      }
+                      setIsEditingProfile(false);
+                    }}
+                    className="flex-1 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-4 py-3 rounded-full font-semibold transition shadow-lg"
+                  >
+                    Save
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setUserFirstName(originalFirstName);
+                      setUserLastName(originalLastName);
+                      setUserMiddleName(originalMiddleName);
+                      setIsEditingProfile(false);
+                    }}
+                    className={`flex-1 ${t.bgSecondary} ${t.textSecondary} px-4 py-3 rounded-full font-semibold hover:opacity-80 transition`}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
