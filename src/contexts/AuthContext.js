@@ -6,7 +6,8 @@ import {
   signOut, 
   onAuthStateChanged,
   sendEmailVerification,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -73,8 +74,23 @@ export const AuthContextProvider = ({ children }) => {
     await signOut(auth);
   };
 
+  // Update user profile
+  const updateUserProfile = async (firstName, middleName, lastName) => {
+    if (auth.currentUser) {
+      const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ');
+      await updateProfile(auth.currentUser, {
+        displayName: fullName
+      });
+      // Update the local user state
+      setUser({
+        ...auth.currentUser,
+        displayName: fullName
+      });
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, logOut, loading, isValidEduEmail }}>
+    <AuthContext.Provider value={{ user, signIn, signUp, logOut, loading, isValidEduEmail, updateUserProfile }}>
       {loading ? null : children}
     </AuthContext.Provider>
   );

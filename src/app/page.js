@@ -86,7 +86,7 @@ const notificationsData = [
 ];
 
 export default function ClutchWireframe() {
-  const { user, loading, logOut } = useAuth();
+  const { user, loading, logOut, updateUserProfile } = useAuth();
   const [currentScreen, setCurrentScreen] = useState(SCREENS.SPLASH);
   const [previousScreen, setPreviousScreen] = useState(SCREENS.SPLASH);
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -105,6 +105,8 @@ export default function ClutchWireframe() {
   const [selectedSourceType, setSelectedSourceType] = useState('org');  // New: 'org' or 'person'
   const [selectedSource, setSelectedSource] = useState(null);  // New: Selected org or person
   const [userLocation, setUserLocation] = useState(null);  // New: Store user's lat/lng
+  const [selectedSpot, setSelectedSpot] = useState(null);  // New: Store selected org for popup
+  const [selectedRequestSource, setSelectedRequestSource] = useState(null);  // New: Store selected org/person for request popup
   const router = useRouter();
 
   // New: Get user location on component mount
@@ -186,9 +188,35 @@ export default function ClutchWireframe() {
   };
   
   const handleDonation = (spot) => {
-    console.log(`Donation logged at ${spot.name}`);
+    setSelectedSpot(spot);
+  };
+  
+  const handleDirections = (spot) => {
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
+    window.open(mapsUrl, '_blank');
+  };
+  
+  const handleCompleteDonation = () => {
+    console.log(`Donation logged at ${selectedSpot.name}`);
+    setSelectedSpot(null);
     setCommunityTab('Restock Updates');
     navigate(SCREENS.COMMUNITY);
+  };
+
+  const handleRequestSource = (source) => {
+    setSelectedRequestSource(source);
+  };
+
+  const handleRequestDirections = (source) => {
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${source.lat},${source.lng}`;
+    window.open(mapsUrl, '_blank');
+  };
+
+  const handleCompleteRequest = () => {
+    console.log(`Request sent to ${selectedRequestSource.name}`);
+    setRequestSentTo(selectedRequestSource);
+    setSelectedRequestSource(null);
+    navigate(SCREENS.REQUEST_SENT);
   };
     
   const handleCreatePost = () => {
@@ -226,6 +254,82 @@ export default function ClutchWireframe() {
     `}</style>
   );
   
+  const DonationModal = ({ spot, onCancel, onGetDirections, onComplete }) => (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div className={`${t.card} rounded-2xl p-6 max-w-sm w-full shadow-2xl`}>
+            <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                    <MapPin size={22} className="text-pink-400" />
+                </div>
+                <h3 className={`font-bold text-lg ${t.text}`}>{spot.name}</h3>
+            </div>
+            <div className={`${t.bgSecondary} p-4 rounded-lg mb-6 space-y-2`}>
+                <div className="flex items-center gap-2">
+                    <MapPin size={18} className="text-pink-500" />
+                    <p className={`${t.textSecondary} text-sm`}>{spot.address}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Navigation size={18} className="text-blue-500" />
+                    <p className={`${t.text} font-semibold`}>{spot.distance}</p>
+                </div>
+            </div>
+            <div className="space-y-2">
+                <button onClick={onGetDirections} className={`w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full font-semibold transition flex items-center justify-center gap-2`}>
+                    <Navigation size={18} /> Get Directions
+                </button>
+                <button onClick={onComplete} className={`w-full bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full font-semibold transition`}>
+                    Confirm Donation
+                </button>
+                <button onClick={onCancel} className={`w-full ${t.bgSecondary} ${t.textSecondary} p-3 rounded-full font-semibold hover:opacity-80 transition`}>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+  );
+
+  const RequestModal = ({ source, onCancel, onGetDirections, onComplete, isOrganization = false }) => (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div className={`${t.card} rounded-2xl p-6 max-w-sm w-full shadow-2xl`}>
+            <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                    <Users size={22} className="text-pink-400" />
+                </div>
+                <h3 className={`font-bold text-lg ${t.text}`}>{source.name}</h3>
+            </div>
+            <div className={`${t.bgSecondary} p-4 rounded-lg mb-6 space-y-2`}>
+                {source.address && (
+                    <div className="flex items-center gap-2">
+                        <MapPin size={18} className="text-pink-500" />
+                        <p className={`${t.textSecondary} text-sm`}>{source.address}</p>
+                    </div>
+                )}
+                <div className="flex items-center gap-2">
+                    <Navigation size={18} className="text-blue-500" />
+                    <p className={`${t.text} font-semibold`}>{source.distance}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <MapPin size={18} className="text-pink-500" />
+                    <p className={`${t.textSecondary} text-sm`}>{source.items}</p>
+                </div>
+            </div>
+            <div className="space-y-2">
+                <button onClick={onGetDirections} className={`w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full font-semibold transition flex items-center justify-center gap-2`}>
+                    <Navigation size={18} /> Get Directions
+                </button>
+                {!isOrganization && (
+                  <button onClick={onComplete} className={`w-full bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full font-semibold transition`}>
+                    Send Request
+                  </button>
+                )}
+                <button onClick={onCancel} className={`w-full ${t.bgSecondary} ${t.textSecondary} p-3 rounded-full font-semibold hover:opacity-80 transition`}>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+  );
+
   const WarningModal = ({ match, onCancel, onProceed, onWhitelist }) => (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
         <div className={`${t.card} rounded-2xl p-6 max-w-sm w-full shadow-2xl`}>
@@ -362,30 +466,40 @@ if (currentScreen === SCREENS.HOME) {
       distance: getDistance(userLocation?.lat, userLocation?.lng, org.lat, org.lng),
       }));
       return (
-        <div className={`w-full h-screen ${t.bg} flex flex-col`}> 
-          <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
-            <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
-            <h2 className="text-2xl font-bold">Donate Items</h2>
-                      </div>
-          <div className="flex-1 p-6 space-y-3 overflow-y-auto">
-            <p className={`${t.textSecondary} text-sm mb-2`}>Select a verified drop-off location near you. After donating, you can update the community!</p>
-            {dropOffSpots.map((spot) => (
-                      <button
-                key={spot.id} 
-                onClick={() => handleDonation(spot)} 
-                className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 border-pink-500`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`font-bold ${t.text}`}>{spot.name}</p>
-                    <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {spot.distance}</p>
+        <>
+          <div className={`w-full h-screen ${t.bg} flex flex-col`}> 
+            <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
+              <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
+              <h2 className="text-2xl font-bold">Donate Items</h2>
+            </div>
+            <div className="flex-1 p-6 space-y-3 overflow-y-auto">
+              <p className={`${t.textSecondary} text-sm mb-2`}>Select a verified drop-off location near you. After donating, you can update the community!</p>
+              {dropOffSpots.map((spot) => (
+                <button
+                  key={spot.id} 
+                  onClick={() => handleDonation(spot)} 
+                  className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 border-pink-500`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={`font-bold ${t.text}`}>{spot.name}</p>
+                      <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {spot.distance}</p>
+                    </div>
+                    <Star size={18} className="text-yellow-400 fill-yellow-400" />
                   </div>
-                  <Star size={18} className="text-yellow-400 fill-yellow-400" />
-                </div>
-                  </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+          {selectedSpot && (
+            <DonationModal 
+              spot={selectedSpot}
+              onCancel={() => setSelectedSpot(null)}
+              onGetDirections={() => handleDirections(selectedSpot)}
+              onComplete={handleCompleteDonation}
+            />
+          )}
+        </>
       );
     }
     
@@ -528,64 +642,75 @@ if (currentScreen === SCREENS.HOME) {
     const people = allMatchesData.filter(person => person.items === requestItem || person.items === 'All Items');
   
     return (
-    <div className={`w-full h-screen ${t.bg} flex flex-col`}>
-      <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
-        <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
-        <h2 className="text-2xl font-bold">Select a Source for {requestItem}</h2>
-      </div>
-      <div className={`p-2 border-b ${t.border}`}>
-        <div className="flex space-x-2 overflow-x-auto hide-scrollbar">
-          {tabs.map(tab => (
-            <button
-              key={tab}
-              onClick={() => setSelectedSourceType(tab === 'Organizations' ? 'org' : 'person')}
-              className={`px-4 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition ${activeTab === tab ? 'bg-pink-500 text-white' : `${t.bgSecondary} ${t.textSecondary}`}`}
-            >
-              {tab}
-            </button>
-          ))}
+      <>
+        <div className={`w-full h-screen ${t.bg} flex flex-col`}>
+          <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center gap-3">
+            <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
+            <h2 className="text-2xl font-bold">Select a Source for {requestItem}</h2>
+          </div>
+          <div className={`p-2 border-b ${t.border}`}>
+            <div className="flex space-x-2 overflow-x-auto hide-scrollbar">
+              {tabs.map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setSelectedSourceType(tab === 'Organizations' ? 'org' : 'person')}
+                  className={`px-4 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition ${activeTab === tab ? 'bg-pink-500 text-white' : `${t.bgSecondary} ${t.textSecondary}`}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 p-6 space-y-3 overflow-y-auto">
+            {selectedSourceType === 'org' ? (
+              filteredOrgs.length > 0 ? filteredOrgs.map((org) => (
+                <button
+                  key={org.id}
+                  onClick={() => handleRequestSource(org)}
+                  className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 border-pink-500`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className={`font-bold ${t.text}`}>{org.name}</p>
+                      <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {org.distance}</p>
+                    </div>
+                    {org.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
+                  </div>
+                  <p className={`text-sm ${t.textSecondary}`}>{org.items}</p>
+                </button>
+              )) : <p className={`text-center ${t.textTertiary} mt-8`}>No organizations available for {requestItem}.</p>
+            ) : (
+              people.length > 0 ? people.map((person) => (
+                <button
+                  key={person.id}
+                  onClick={() => handleRequestSource(person)}
+                  className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 ${person.verified ? 'border-pink-500' : 'border-gray-500'}`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className={`font-bold ${t.text}`}>{person.name}</p>
+                      <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {person.distance}</p>
+                    </div>
+                    {person.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
+                  </div>
+                  <p className={`text-sm ${t.textSecondary}`}>{person.items}</p>
+                </button>
+              )) : <p className={`text-center ${t.textTertiary} mt-8`}>No people available for {requestItem}.</p>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="flex-1 p-6 space-y-3 overflow-y-auto">
-        {selectedSourceType === 'org' ? (
-          filteredOrgs.length > 0 ? filteredOrgs.map((org) => (
-            <button
-              key={org.id}
-              onClick={() => { setSelectedSource(org); navigate(SCREENS.DIRECTIONS_MAP); }}
-              className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 border-pink-500`}
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <p className={`font-bold ${t.text}`}>{org.name}</p>
-                  <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {org.distance}</p>
-                </div>
-                {org.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
-              </div>
-              <p className={`text-sm ${t.textSecondary}`}>{org.items}</p>
-            </button>
-          )) : <p className={`text-center ${t.textTertiary} mt-8`}>No organizations available for {requestItem}.</p>
-        ) : (
-          people.length > 0 ? people.map((person) => (
-            <button
-              key={person.id}
-              onClick={() => { setSelectedSource(person); navigate(SCREENS.DIRECTIONS_MAP); }}
-              className={`w-full ${t.card} p-4 rounded-2xl shadow hover:shadow-lg transition text-left border-l-4 ${person.verified ? 'border-pink-500' : 'border-gray-500'}`}
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <p className={`font-bold ${t.text}`}>{person.name}</p>
-                  <p className={`text-xs ${t.textTertiary} flex items-center gap-1`}><MapPin size={14} /> {person.distance}</p>
-                </div>
-                {person.verified && <Star size={18} className="text-yellow-400 fill-yellow-400" />}
-              </div>
-              <p className={`text-sm ${t.textSecondary}`}>{person.items}</p>
-            </button>
-          )) : <p className={`text-center ${t.textTertiary} mt-8`}>No people available for {requestItem}.</p>
+        {selectedRequestSource && (
+          <RequestModal
+            source={selectedRequestSource}
+            onCancel={() => setSelectedRequestSource(null)}
+            onGetDirections={() => handleRequestDirections(selectedRequestSource)}
+            onComplete={handleCompleteRequest}
+            isOrganization={selectedSourceType === 'org'}
+          />
         )}
-      </div>
-    </div>
-  );
-}
+      </>
+    );
+  }
 
   // DIRECTIONS_MAP screen with map, directions, and start button
   if (currentScreen === SCREENS.DIRECTIONS_MAP) {
@@ -821,6 +946,7 @@ if (currentScreen === SCREENS.PROFILE) {
       setSelectedCampus={setSelectedCampus}
       GSU_CAMPUSES={GSU_CAMPUSES}
       user={user}
+      updateUserProfile={updateUserProfile}
     />
   );
 }
