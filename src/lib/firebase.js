@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbc8Ez9QvHYDYGDLdW7RtR8JnycEfJTkw",
-  authDomain: "clutch-20040.firebaseapp.com",
-  projectId: "clutch-20040",
-  storageBucket: "clutch-20040.firebasestorage.app",
-  messagingSenderId: "200259366491",
-  appId: "1:200259366491:web:7cfa71e1c3d03045d1597e",
-  measurementId: "G-G8H2G41HSC"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
