@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowLeft, ChevronRight, Star, Award, Settings as SettingsIcon } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Award, Settings as SettingsIcon } from 'lucide-react';
+import { StarPatch, WavyDivider, Diamond } from '@/components/ui/Decorative';
 
-export default function ProfileScreen({ 
-  t, 
-  goBack, 
-  navigate, 
-  handleLogout, 
-  SCREENS, 
-  selectedCampus, 
-  setSelectedCampus, 
+export default function ProfileScreen({
+  t,
+  goBack,
+  navigate,
+  handleLogout,
+  SCREENS,
+  selectedCampus,
+  setSelectedCampus,
   GSU_CAMPUSES,
   user,
   updateUserProfile
@@ -23,21 +24,20 @@ export default function ProfileScreen({
   const [originalLastName, setOriginalLastName] = useState('Johnson');
   const [originalMiddleName, setOriginalMiddleName] = useState('');
 
-  // Initialize names from user's displayName if available
   React.useEffect(() => {
     if (user?.displayName) {
       const nameParts = user.displayName.split(' ');
       const firstName = nameParts[0] || 'Maya';
       let middleName = '';
       let lastName = 'Johnson';
-      
+
       if (nameParts.length > 2) {
         middleName = nameParts.slice(1, -1).join(' ');
         lastName = nameParts[nameParts.length - 1];
       } else if (nameParts.length === 2) {
         lastName = nameParts[1] || 'Johnson';
       }
-      
+
       setUserFirstName(firstName);
       setUserLastName(lastName);
       setUserMiddleName(middleName);
@@ -48,100 +48,108 @@ export default function ProfileScreen({
   }, [user?.displayName]);
 
   return (
-    <div className={`w-full h-screen bg-gradient-to-b ${t.bg} flex flex-col`}> 
-      <div className="bg-gradient-to-r from-black to-pink-900 text-white p-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-            <button onClick={goBack} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button>
-          {/* <button onClick={() => navigate(SCREENS.HOME)} className="hover:bg-pink-800 p-2 rounded-full transition"><ArrowLeft size={24} /></button> */}
-          <h2 className="text-2xl font-bold">My Profile</h2>
-        </div>
-        {/* <button onClick={handleLogout} className="p-2 rounded-full hover:bg-white/10 transition bg-red-600 hover:bg-red-700" title="Logout">
-          <ArrowLeft size={22} />
-        </button> */}
+    <div className="w-full h-screen bg-cream flex flex-col">
+      {/* Header */}
+      <div className="px-6 pt-6 pb-4 flex items-center gap-3">
+        <button onClick={goBack} className="p-2 rounded-full hover:bg-taupe/10 transition">
+          <ArrowLeft size={22} strokeWidth={1} className="text-maroon" />
+        </button>
+        <h2 className="font-display text-2xl text-near-black">My Profile</h2>
       </div>
-      <div className="flex-1 p-6 space-y-4 overflow-y-auto">
-        <div className={`${t.card} p-6 rounded-2xl shadow text-center`}> 
-          <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl">{userFirstName.charAt(0)}</div>
-          
+
+      <div className="flex-1 px-6 space-y-4 overflow-y-auto pb-6">
+        {/* Profile card */}
+        <div className="bg-white border border-soft-pink/50 p-6 rounded-xl text-center">
+          <div className="w-16 h-16 bg-hot-pink rounded-full mx-auto mb-3 flex items-center justify-center text-white text-xl font-display">
+            {userFirstName.charAt(0)}
+          </div>
+
           {!isEditingProfile ? (
             <>
-              <p className={`font-bold text-lg ${t.text}`}>{userFirstName} {userMiddleName && userMiddleName + ' '} {userLastName}</p>
-              <p className={`text-sm ${t.textSecondary} mb-4`}>{user?.email}</p>
-              <button onClick={() => {
-                setOriginalFirstName(userFirstName);
-                setOriginalLastName(userLastName);
-                setOriginalMiddleName(userMiddleName);
-                setIsEditingProfile(true);
-              }} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-semibold transition">Edit Profile</button>
+              <p className="font-display text-lg text-near-black">
+                {userFirstName} {userMiddleName && userMiddleName + ' '}{userLastName}
+              </p>
+              <p className="text-sm text-dusty-rose mb-4">{user?.email}</p>
+              <button
+                onClick={() => {
+                  setOriginalFirstName(userFirstName);
+                  setOriginalLastName(userLastName);
+                  setOriginalMiddleName(userMiddleName);
+                  setIsEditingProfile(true);
+                }}
+                className="bg-hot-pink hover:bg-hot-pink/90 text-white px-6 py-2 rounded-full text-sm font-medium transition"
+              >
+                Edit Profile
+              </button>
             </>
           ) : (
-            <div className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4`}>
-              <div className={`${t.card} rounded-2xl p-8 max-w-md w-full shadow-2xl`}>
-                <h3 className={`font-bold text-2xl ${t.text} mb-6 text-center`}>Edit Your Profile</h3>
-                
-                {/* Name Preview */}
-                <div className={`${t.bgSecondary} p-4 rounded-xl mb-6 text-center`}>
-                  <p className={`text-xs ${t.textTertiary} mb-2`}>Your new name</p>
-                  <p className={`font-bold text-lg ${t.text}`}>
-                    {userFirstName} {userMiddleName && userMiddleName + ' '} {userLastName}
+            <div className="fixed inset-0 bg-near-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl border border-soft-pink/50 p-8 max-w-md w-full shadow-lg">
+                <h3 className="font-display text-2xl text-near-black mb-6 text-center">Edit Your Profile</h3>
+
+                {/* Name preview */}
+                <div className="bg-cream p-4 rounded-lg mb-6 text-center">
+                  <p className="text-xs text-dusty-rose mb-1 label-caps">your new name</p>
+                  <p className="font-display text-lg text-near-black">
+                    {userFirstName} {userMiddleName && userMiddleName + ' '}{userLastName}
                   </p>
                 </div>
 
-                {/* Form Fields */}
+                {/* Form fields */}
                 <div className="space-y-4 mb-6">
                   <div>
-                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>First Name *</label>
-                    <input 
-                      type="text" 
-                      value={userFirstName} 
+                    <label className="label-caps text-dusty-rose mb-2 block">First Name</label>
+                    <input
+                      type="text"
+                      value={userFirstName}
                       onChange={(e) => setUserFirstName(e.target.value)}
-                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      className="w-full bg-cream text-near-black px-4 py-3 rounded-lg text-sm outline-none focus:ring-1 focus:ring-hot-pink transition"
                       placeholder="Enter your first name"
                     />
                   </div>
                   <div>
-                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>Middle Name</label>
-                    <input 
-                      type="text" 
-                      value={userMiddleName} 
+                    <label className="label-caps text-dusty-rose mb-2 block">Middle Name</label>
+                    <input
+                      type="text"
+                      value={userMiddleName}
                       onChange={(e) => setUserMiddleName(e.target.value)}
-                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      className="w-full bg-cream text-near-black px-4 py-3 rounded-lg text-sm outline-none focus:ring-1 focus:ring-hot-pink transition"
                       placeholder="Optional"
                     />
                   </div>
                   <div>
-                    <label className={`block text-xs font-bold ${t.textTertiary} mb-2 uppercase tracking-wide`}>Last Name *</label>
-                    <input 
-                      type="text" 
-                      value={userLastName} 
+                    <label className="label-caps text-dusty-rose mb-2 block">Last Name</label>
+                    <input
+                      type="text"
+                      value={userLastName}
                       onChange={(e) => setUserLastName(e.target.value)}
-                      className={`w-full ${t.input} px-4 py-3 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500 transition`}
+                      className="w-full bg-cream text-near-black px-4 py-3 rounded-lg text-sm outline-none focus:ring-1 focus:ring-hot-pink transition"
                       placeholder="Enter your last name"
                     />
                   </div>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Actions */}
                 <div className="flex gap-3">
-                  <button 
+                  <button
                     onClick={async () => {
                       if (updateUserProfile) {
                         await updateUserProfile(userFirstName, userMiddleName, userLastName);
                       }
                       setIsEditingProfile(false);
                     }}
-                    className="flex-1 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-4 py-3 rounded-full font-semibold transition shadow-lg"
+                    className="flex-1 bg-hot-pink hover:bg-hot-pink/90 text-white px-4 py-3 rounded-full font-medium transition"
                   >
                     Save
                   </button>
-                  <button 
+                  <button
                     onClick={() => {
                       setUserFirstName(originalFirstName);
                       setUserLastName(originalLastName);
                       setUserMiddleName(originalMiddleName);
                       setIsEditingProfile(false);
                     }}
-                    className={`flex-1 ${t.bgSecondary} ${t.textSecondary} px-4 py-3 rounded-full font-semibold hover:opacity-80 transition`}
+                    className="flex-1 bg-cream text-dusty-rose px-4 py-3 rounded-full font-medium hover:bg-taupe/10 transition"
                   >
                     Cancel
                   </button>
@@ -154,27 +162,58 @@ export default function ProfileScreen({
             <select
               value={selectedCampus}
               onChange={(e) => setSelectedCampus(e.target.value)}
-              className={`w-full appearance-none ${t.input} ${t.textSecondary} text-sm font-semibold p-2 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500`}
+              className="w-full appearance-none bg-cream text-near-black text-sm font-medium p-2 rounded-lg text-center focus:outline-none focus:ring-1 focus:ring-hot-pink"
             >
               {GSU_CAMPUSES.map(campus => (
                 <option key={campus} value={campus}>{campus}</option>
               ))}
             </select>
-            <ChevronRight size={16} className={`absolute right-3 top-1/2 -translate-y-1/2 ${t.textTertiary} pointer-events-none`} />
+            <ChevronRight size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-dusty-rose pointer-events-none" />
           </div>
-          <p className="flex items-center justify-center gap-1 text-yellow-500 mt-4"><Star size={16} className="fill-yellow-400" /> Verified</p>
+
+          <p className="flex items-center justify-center gap-1.5 text-hot-pink mt-4 text-sm">
+            <StarPatch size={16} className="text-hot-pink" /> Verified
+          </p>
         </div>
-        <div className={`${t.card} p-4 rounded-2xl shadow`}> 
-          <p className={`font-semibold ${t.text} mb-3`}>Stats</p>
+
+        {/* Stats */}
+        <div className="bg-white border border-soft-pink/50 p-4 rounded-xl">
+          <p className="label-caps text-dusty-rose mb-3">Stats</p>
           <div className="grid grid-cols-3 gap-3 text-center">
-            <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">5</p><p className={`text-xs ${t.textTertiary}`}>Requests</p></div>
-            <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">8</p><p className={`text-xs ${t.textTertiary}`}>Helped</p></div>
-            <div className={`${t.bgSecondary} p-3 rounded-lg`}><p className="text-2xl font-bold text-pink-500">12</p><p className={`text-xs ${t.textTertiary}`}>Donated</p></div>
+            <div className="bg-cream p-3 rounded-lg">
+              <p className="font-display text-2xl text-hot-pink">5</p>
+              <p className="text-xs text-dusty-rose">Requests</p>
+            </div>
+            <div className="bg-cream p-3 rounded-lg">
+              <p className="font-display text-2xl text-hot-pink">8</p>
+              <p className="text-xs text-dusty-rose">Helped</p>
+            </div>
+            <div className="bg-cream p-3 rounded-lg">
+              <p className="font-display text-2xl text-hot-pink">12</p>
+              <p className="text-xs text-dusty-rose">Donated</p>
+            </div>
           </div>
         </div>
-        <button className={`w-full ${t.card} p-4 rounded-2xl shadow font-semibold ${t.textSecondary} ${t.cardHover} transition flex justify-between items-center`}><span><Award size={20} className="inline mr-2" />My Coupons</span><ChevronRight size={20} /></button>
-        <button onClick={() => navigate(SCREENS.SETTINGS)} className={`w-full ${t.card} p-4 rounded-2xl shadow font-semibold ${t.textSecondary} ${t.cardHover} transition flex justify-between items-center`}><span><SettingsIcon size={20} className="inline mr-2" />Settings</span><ChevronRight size={20} /></button>
-        <button onClick={handleLogout} className="w-full bg-red-600 hover:bg-red-700 text-white p-4 rounded-2xl shadow font-semibold transition">Sign Out</button>
+
+        <WavyDivider />
+
+        <button className="w-full bg-white border border-soft-pink/50 p-4 rounded-xl text-sm font-medium text-near-black hover:shadow-sm transition flex justify-between items-center">
+          <span className="flex items-center gap-2">
+            <Award size={18} strokeWidth={1} className="text-hot-pink" /> My Coupons
+          </span>
+          <ChevronRight size={16} strokeWidth={1} className="text-dusty-rose" />
+        </button>
+
+        <button onClick={() => navigate(SCREENS.SETTINGS)} className="w-full bg-white border border-soft-pink/50 p-4 rounded-xl text-sm font-medium text-near-black hover:shadow-sm transition flex justify-between items-center">
+          <span className="flex items-center gap-2">
+            <SettingsIcon size={18} strokeWidth={1} className="text-hot-pink" /> Settings
+          </span>
+          <ChevronRight size={16} strokeWidth={1} className="text-dusty-rose" />
+        </button>
+
+        <button onClick={handleLogout} className="w-full border border-maroon text-maroon p-4 rounded-xl text-sm font-medium hover:bg-maroon/5 transition">
+          Sign Out
+        </button>
       </div>
     </div>
   );

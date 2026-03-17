@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import { WashiTape, FourPointStar, Asterisk } from '@/components/ui/Decorative';
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,6 @@ export default function SignUpPage() {
   const [success, setSuccess] = useState('');
   const router = useRouter();
 
-  // Function to validate .edu email
   const isValidEduEmail = (email) => {
     const eduEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu$/;
     return eduEmailRegex.test(email);
@@ -27,12 +27,12 @@ export default function SignUpPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(''); // Clear error when user starts typing
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
       return;
@@ -58,17 +58,11 @@ export default function SignUpPage() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      
-      // Send email verification
       await sendEmailVerification(userCredential.user);
-      
-      setSuccess('Account created successfully! Please check your email for verification.');
-      
-      // Redirect to main app dashboard after 2 seconds
+      setSuccess('Account created. Check your email for verification.');
       setTimeout(() => {
         router.push('/');
       }, 2000);
-      
     } catch (error) {
       console.error('Sign up error:', error);
       if (error.code === 'auth/email-already-in-use') {
@@ -84,23 +78,31 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-pink-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-gray-800 rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">C</div>
-          <h1 className="text-3xl font-bold text-white mb-2">Join Clutch</h1>
-          <p className="text-pink-200">Create your account to get started</p>
+    <div className="min-h-screen bg-cream flex items-center justify-center p-4 relative overflow-hidden">
+      <FourPointStar size={18} className="absolute top-20 right-12 text-taupe/40 star-pulse" />
+      <Asterisk size={14} className="absolute bottom-24 left-16 text-hot-pink/30" />
+      <FourPointStar size={12} className="absolute top-36 left-20 text-maroon/20 star-pulse" style={{ animationDelay: '0.5s' }} />
+
+      <div className="max-w-sm w-full relative">
+        <div className="relative z-10 -mb-3">
+          <WashiTape rotate="1.5deg" className="mx-4" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Field */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              University Email
-            </label>
-            <div className="relative">
+        <div className="bg-white rounded-xl shadow-md border border-soft-pink px-8 py-10 relative">
+          <div className="text-center mb-8">
+            <h1 className="font-display text-5xl text-near-black tracking-tight mb-2">
+              Join Clutch
+            </h1>
+            <p className="text-maroon text-sm font-medium tracking-wide">
+              Create your account to get started.
+            </p>
+          </div>
 
-              <img src="/ClutchIcons/envelope.png" alt="Email icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="email" className="label-caps text-dusty-rose mb-2 block">
+                University Email
+              </label>
               <input
                 id="email"
                 name="email"
@@ -109,19 +111,15 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
+                className="w-full bg-transparent border-b-2 border-hot-pink/40 focus:border-hot-pink py-2 px-1 text-near-black placeholder-taupe/60 outline-none transition-colors text-sm"
                 placeholder="you@university.edu"
               />
             </div>
-          </div>
 
-          {/* Password Field */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-              Password
-            </label>
-            <div className="relative">
-              <img src="/ClutchIcons/lock_alt.png" alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label htmlFor="password" className="label-caps text-dusty-rose mb-2 block">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
@@ -130,19 +128,15 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
-                placeholder="••••••••"
+                className="w-full bg-transparent border-b-2 border-hot-pink/40 focus:border-hot-pink py-2 px-1 text-near-black placeholder-taupe/60 outline-none transition-colors text-sm"
+                placeholder="at least 6 characters"
               />
             </div>
-          </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <img src="/ClutchIcons/lock_alt.png" alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label htmlFor="confirmPassword" className="label-caps text-dusty-rose mb-2 block">
+                Confirm Password
+              </label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -151,61 +145,61 @@ export default function SignUpPage() {
                 disabled={loading}
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl shadow-sm placeholder-gray-400 focus:ring-pink-500 focus:border-pink-500 transition duration-150 ease-in-out text-base text-white"
-                placeholder="••••••••"
+                className="w-full bg-transparent border-b-2 border-hot-pink/40 focus:border-hot-pink py-2 px-1 text-near-black placeholder-taupe/60 outline-none transition-colors text-sm"
+                placeholder="re-enter your password"
               />
             </div>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-md text-sm">
-              {error}
+            {error && (
+              <div className="bg-maroon/10 border border-maroon/30 text-maroon px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-hot-pink/10 border border-hot-pink/30 text-maroon px-4 py-3 rounded-lg text-sm">
+                {success}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 rounded-full text-base font-medium shadow-sm transition-all bg-hot-pink text-white hover:bg-hot-pink/90 focus:outline-none focus:ring-2 focus:ring-hot-pink/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+
+            <div className="text-center">
+              <p className="text-dusty-rose text-sm">
+                Already have an account?{' '}
+                <button
+                  type="button"
+                  onClick={() => router.push('/login')}
+                  className="text-hot-pink hover:text-maroon font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+              </p>
             </div>
-          )}
+          </form>
 
-          {/* Success Message */}
-          {success && (
-            <div className="bg-green-900/50 border border-green-500 text-green-300 px-4 py-3 rounded-md text-sm">
-              {success}
-            </div>
-          )}
-
-          {/* Sign Up Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 px-4 rounded-xl text-lg font-semibold shadow-lg transition duration-300 ease-in-out bg-pink-500 text-white hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Creating Account...' : 'Create Account'}
-          </button>
-
-          {/* Sign In Link */}
-          <div className="text-center">
-            <p className="text-gray-300 text-sm">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => router.push('/login')}
-                className="text-pink-400 hover:text-pink-300 font-medium"
-              >
-                Sign In
-              </button>
-            </p>
-          </div>
-        </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-600" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-800 text-gray-400">
-                .edu email required
-              </span>
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-taupe/20" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-3 bg-white text-taupe label-caps">
+                  .edu email required
+                </span>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <FourPointStar size={16} className="text-taupe/50" />
         </div>
       </div>
     </div>

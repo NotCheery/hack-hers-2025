@@ -1,26 +1,276 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #FAF7F2;
+  --hot-pink: #FF0090;
+  --soft-pink: #F9C6D0;
+  --blush: #FADADD;
+  --dusty-rose: #C27088;
+  --deep-rose: #9E4A5D;
+  --maroon: #6B1A2A;
+  --taupe: #C4A882;
+  --near-black: #1A1A1A;
+  --pale-pink: #FFF5F9;
+  --mauve-bg: #B85570;
+  --lavender: #E8D5E0;
+  --font-serif-display: 'DM Serif Display', serif;
+  --font-sans: 'DM Sans', sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-cream: #FAF7F2;
+  --color-hot-pink: #FF0090;
+  --color-soft-pink: #F9C6D0;
+  --color-blush: #FADADD;
+  --color-dusty-rose: #C27088;
+  --color-deep-rose: #9E4A5D;
+  --color-maroon: #6B1A2A;
+  --color-taupe: #C4A882;
+  --color-near-black: #1A1A1A;
+  --color-pale-pink: #FFF5F9;
+  --color-mauve-bg: #B85570;
+  --color-lavender: #E8D5E0;
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif-display);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--near-black);
+  font-family: var(--font-sans);
 }
+
+/* Serif display headings */
+.font-display {
+  font-family: var(--font-serif-display);
+}
+
+/* Small caps label style */
+.label-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+/* ── Gingham patterns ── */
+.bg-gingham {
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, rgba(249, 198, 208, 0.35) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(249, 198, 208, 0.35) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(249, 198, 208, 0.35) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(249, 198, 208, 0.35) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+
+.bg-gingham-rose {
+  background-color: #F9C6D0;
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.4) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.4) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+/* Dot pattern */
+.bg-dots {
+  background-image: radial-gradient(circle, rgba(196, 168, 130, 0.2) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Pink dots */
+.bg-dots-pink {
+  background-image: radial-gradient(circle, rgba(255, 0, 144, 0.08) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+/* Lined paper for notepad */
+.bg-lined {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    rgba(249, 198, 208, 0.4) 27px,
+    rgba(249, 198, 208, 0.4) 28px
+  );
+}
+
+/* Canvas / linen texture */
+.bg-canvas {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAF7F2'/%3E%3Crect width='1' height='1' fill='%23f3ede4' x='0' y='0'/%3E%3Crect width='1' height='1' fill='%23f3ede4' x='2' y='2'/%3E%3C/svg%3E");
+  background-size: 4px 4px;
+}
+
+/* ── Torn edges ── */
+.torn-top {
+  clip-path: polygon(
+    0% 4%, 3% 1%, 6% 3.5%, 9% 0.5%, 12% 3%, 15% 1.5%, 18% 4%, 21% 0%, 24% 3%,
+    27% 1%, 30% 4%, 33% 0.5%, 36% 3%, 39% 1.5%, 42% 4%, 45% 0%, 48% 3.5%,
+    51% 1%, 54% 3%, 57% 0.5%, 60% 4%, 63% 1%, 66% 3.5%, 69% 0%, 72% 3%,
+    75% 1.5%, 78% 4%, 81% 0.5%, 84% 3%, 87% 1%, 90% 3.5%, 93% 0%, 96% 3%,
+    100% 1%,
+    100% 100%, 0% 100%
+  );
+}
+
+.torn-bottom {
+  clip-path: polygon(
+    0% 0%, 100% 0%,
+    100% 96%, 97% 99%, 94% 96.5%, 91% 100%, 88% 97%, 85% 99.5%, 82% 96%,
+    79% 100%, 76% 97%, 73% 99.5%, 70% 96%, 67% 100%, 64% 97%, 61% 99.5%,
+    58% 96%, 55% 100%, 52% 97%, 49% 99.5%, 46% 96%, 43% 100%, 40% 97%,
+    37% 99.5%, 34% 96%, 31% 100%, 28% 97%, 25% 99.5%, 22% 96%, 19% 100%,
+    16% 97%, 13% 99.5%, 10% 96%, 7% 100%, 4% 97%, 0% 100%
+  );
+}
+
+/* Perforated left edge for ticket stub */
+.perforated-left {
+  border-left: 3px dashed var(--taupe);
+}
+
+/* ── Washi tape strip ── */
+.washi-tape {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 144, 0.15) 25%,
+    rgba(255, 0, 144, 0.08) 25%,
+    rgba(255, 0, 144, 0.08) 50%,
+    rgba(255, 0, 144, 0.15) 50%,
+    rgba(255, 0, 144, 0.15) 75%,
+    rgba(255, 0, 144, 0.08) 75%
+  );
+  background-size: 8px 8px;
+}
+
+.washi-tape-rose {
+  background: linear-gradient(
+    135deg,
+    rgba(194, 112, 136, 0.25) 25%,
+    rgba(194, 112, 136, 0.12) 25%,
+    rgba(194, 112, 136, 0.12) 50%,
+    rgba(194, 112, 136, 0.25) 50%,
+    rgba(194, 112, 136, 0.25) 75%,
+    rgba(194, 112, 136, 0.12) 75%
+  );
+  background-size: 8px 8px;
+}
+
+/* ── Retro window frame (Y2K pixel-window style) ── */
+.retro-window {
+  border: 2px solid var(--soft-pink);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 12px rgba(194, 112, 136, 0.1);
+}
+
+.retro-window-header {
+  background: linear-gradient(135deg, #FADADD 0%, #F9C6D0 100%);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 2px solid var(--soft-pink);
+}
+
+.retro-window-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hot-pink);
+  opacity: 0.6;
+}
+
+/* ── Wavy section divider ── */
+.wavy-divider {
+  position: relative;
+  height: 12px;
+}
+.wavy-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 12'%3E%3Cpath d='M0 6 Q5 0 10 6 Q15 12 20 6 Q25 0 30 6 Q35 12 40 6' stroke='%23F9C6D0' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size: 40px 12px;
+}
+
+/* ── Animations ── */
+@keyframes star-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+.star-pulse {
+  animation: star-pulse 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(15deg); }
+}
+.sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes envelope-open {
+  0% { opacity: 1; transform: rotateY(0deg); }
+  50% { opacity: 0; transform: rotateY(90deg); }
+  100% { opacity: 0; transform: rotateY(90deg); }
+}
+@keyframes envelope-reveal {
+  0% { opacity: 0; transform: rotateY(-90deg); }
+  50% { opacity: 0; transform: rotateY(-90deg); }
+  100% { opacity: 1; transform: rotateY(0deg); }
+}
+.envelope-close { animation: envelope-open 0.8s ease-in-out forwards; }
+.envelope-open { animation: envelope-reveal 0.8s ease-in-out forwards; }
+
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slide-up 0.5s ease-out 0.8s both; }
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.gentle-bounce { animation: gentle-bounce 1.5s ease-in-out infinite; }
+
+/* Hide scrollbar utility */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Pixel heart shape (CSS only) */
+.pixel-heart {
+  position: relative;
+  width: 12px;
+  height: 10px;
+}
+.pixel-heart::before,
+.pixel-heart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hot-pink);
+}
+.pixel-heart::before { left: 0; }
+.pixel-heart::after { right: 0; }
