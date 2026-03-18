@@ -1,6 +1,7 @@
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthContextProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
@@ -24,9 +25,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${dmSerifDisplay.variable} ${dmSans.variable} antialiased`}
       >
-        <AuthContextProvider>
-          {children}
-        </AuthContextProvider>
+        <ThemeProvider>
+          <AuthContextProvider>
+            {children}
+          </AuthContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
